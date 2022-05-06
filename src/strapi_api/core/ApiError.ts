@@ -1,18 +1,21 @@
-class ApiError extends Error {
-    public httpCustomStatusCode = 200;
-    public code : number;
-    public msg : string;
-    public userError : string;
-    public detail : string
+import HttpStatusCode from "./HttpStatusCode";
 
-    constructor(errorCode : number, errorMessage : string, userError : string, errorDetail : string) {
-        super();
-        this.code = errorCode;
-        this.msg = errorMessage;
-        this.userError = userError;
-        this.detail = errorDetail;
-        this.name = this.constructor.name;
-    }
+interface ApiError extends Error {
+  // Http status code just for denormalization
+  httpCustomStatusCode: HttpStatusCode;
+
+  // Internal error-code. This is just for this API
+  code: number;
+
+  // The explicit message the API client will receive
+  message: string;
+
+  // The prepared message that the user should receive
+  userError: string;
+
+  // Other details
+  detail: string;
 }
+
 
 export default ApiError;

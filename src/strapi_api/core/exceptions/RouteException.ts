@@ -1,16 +1,28 @@
-import { defaultLanguage } from '../../config/language';
+import {defaultLanguage} from '../../config/language';
 import ApiError from '../ApiError';
+import HttpStatusCode from "../HttpStatusCode";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const errors = await import(`../../resources/lang/${defaultLanguage}/routeErrorMessages.ts`);
+const {default: errors} = await import(`../../resources/lang/${defaultLanguage}/routeErrorMessages.ts`);
 
-class RouteException extends ApiError {
-    constructor(errorTitle : string) {
-        const err = errors[errorTitle];
-        super(err.code, errorTitle, err.userError, err.detail);
-        super.httpCustomStatusCode = err.httpCustomStatusCode || super.httpCustomStatusCode;
-    }
+class RouteException implements ApiError {
+  httpCustomStatusCode: HttpStatusCode;
+  code: number;
+  message: string;
+  userError: string;
+  detail: string;
+
+  name: string;
+
+  constructor(errorTitle: string) {
+    const err = errors[errorTitle];
+
+    this.httpCustomStatusCode = err.httpCustomStatusCode || HttpStatusCode.OK;
+
+    this.code = err.code;
+    this.message = errorTitle;
+    this.userError = err.userError;
+    this.detail = err.detail;
+  }
 }
 
 export default RouteException;

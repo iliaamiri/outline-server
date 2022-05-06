@@ -1,21 +1,11 @@
-/*
-* ///////////// Importing the HTTP server Express.js, from app.ts /////////////
-* */
+import config from './config/app.config';
+
 import server from './app';
 
-/*
-* ///////////// Setting the port that the API is listening on /////////////
-* */
-const PORT = process.env.PORT || 8080;
+const PORT = config.port;
 
-/*
-* ///////////// Setting the app url /////////////
-* */
-const APP_URL = process.env.APP_URL || "http://localhost";
+const APP_URL = config.appUrl;
 
-/*
-* ///////////// Start listening /////////////
-* */
 server.listen(PORT, () => {
     console.log(`Server is available on ${APP_URL}:${PORT}`);
 });

@@ -20,8 +20,8 @@
       "name": "keys",
       "description": "Outline VPN Keys",
       "externalDocs": {
-        "description": "Find out more about our store",
-        "url": "http://swagger.io"
+        "description": "Find out more about Access Keys",
+        "url": "https://support.getoutline.org/s/article/accesskey?language=en_US#:~:text=An%20access%20key%2C%20often%20referred,can%20decrypt%20your%20internet%20traffic."
       }
     }
   ],
@@ -62,6 +62,43 @@
         ]
       }
     },
+    "/keys/getById/{key}": {
+      "get": {
+        "tags": [
+          "keys"
+        ],
+        "summary": "Get information about an access key given its key id",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "value of VPN key to fetch info based on",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Key"
+            }
+          },
+          "500": {
+            "description": "Internal Error"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/keys/new": {
       "post": {
         "tags": [
@@ -72,7 +109,23 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Given the data-limit for the new Access Key, create one and set its data-limit to the value of `dataLimit` parameter in body. ",
+            "required": true,
+            "schema": {
+              "properties": {
+                "dataLimit": {
+                  "type": "string",
+                  "format": "int64",
+                  "description": "Data Limit in Bytes"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation",
@@ -130,6 +183,64 @@
           }
         ]
       }
+    },
+    "/keys/updateDataLimit/{key}": {
+      "put": {
+        "tags": [
+          "keys"
+        ],
+        "summary": "Updates the data-limit of an Access Key",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "value of VPN key to modify",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Given the data-limit for an existing Access Key, update/set its data-limit to the value of `dataLimit` parameter in body.",
+            "required": true,
+            "schema": {
+              "properties": {
+                "dataLimit": {
+                  "type": "string",
+                  "format": "int64",
+                  "description": "Data Limit in Bytes"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data-limit for the Access Key has been updated"
+          },
+          "400": {
+            "description": "The data-limit was not either passed, or passed in a valid format.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -146,6 +257,11 @@
         "keyValue": {
           "type": "string",
           "description": "VPN Key Value | CONFIDENTIAL SENSITIVE DATA"
+        },
+        "dataLimit": {
+          "type": "string",
+          "format": "int64",
+          "description": "Data-limit value in Bytes"
         },
         "createdAt": {
           "type": "string",
@@ -171,35 +287,6 @@
           "type": "string"
         },
         "detail": {
-          "type": "string"
-        }
-      }
-    },
-    "Tag": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "xml": {
-        "name": "Tag"
-      }
-    },
-    "ApiResponse": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "boolean"
-        },
-        "type": {
-          "type": "string"
-        },
-        "message": {
           "type": "string"
         }
       }
